@@ -33,11 +33,15 @@ function FetchFlask({ url }) {
   // Separate the make and model information to put in the combo box
 
   if (data) {
+    console.log("HI");
     return (
       <div>
-      <h1> {data["0"]} was fetched</h1>
-      <h1>You'll consume -- barrels of fuel per annum.</h1>
-      <h1>That's the same as --some equivalent surprising comparison--</h1>
+        {/* <ComboBox list={makeAndModel.map(x => x['make'] + ' ' + x['model'])} />
+        <ComboBox list={makeAndModel.map(x => x['year'])} /> */}
+        <ComboBox list={makeAndModel}/>
+        <h1> {data["0"]} was fetched</h1>
+        <h1>You'll consume -- barrels of fuel per annum.</h1>
+        <h1>That's the same as --some equivalent surprising comparison--</h1>
       </div>
     );
   }
@@ -52,10 +56,6 @@ function App() {
         <h5>Car Impact Associator</h5>
 
         <FetchFlask url="http://localhost:5012/data" />
-        
-        {/* <ComboBox list={makeAndModel.map(x => x['make'] + ' ' + x['model'])} />
-        <ComboBox list={makeAndModel.map(x => x['year'])} /> */}
-        <ComboBox list={makeAndModel}/>
 
 
         <br></br>
