@@ -13,4 +13,4 @@ def get_data():
     return "This should grab info from the db"
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port='5001')
