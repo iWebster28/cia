@@ -10,7 +10,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 //   { make: 'Audi', model: '4000', vehicle_id: 19854},
 //   { make: 'BMW', model: '3 Series', vehicle_id: 19854},
 // ];
-const makeAndModel = [];
 
 
 // const barrels = 59; //temp demo
@@ -23,25 +22,28 @@ function FetchFlask({ url }) {
   useEffect(() => { //  useEffect fetches from 'url' and sets data
     fetch(`${url}`, {method: "GET", headers: {"Content-Type": "application/json", "Accept": "application/json"}})
       .then(res => res.json())
-      .then(data => console.log(data))
-      .then(setData)
+      .then(data => setData(data))
       .catch(console.error);
   }, []);
 
-  console.log('hi');
+  // console.log('hi' + JSON.stringify(data));
 
   // Separate the make and model information to put in the combo box
-
   if (data) {
-    console.log("HI");
+    // const makeAndModel = data[0].map(x => [x.make, x.model, x.vehicle_id]);
+    // console.log(makeAndModel);
+    console.log(data[0]);
     return (
       <div>
-        {/* <ComboBox list={makeAndModel.map(x => x['make'] + ' ' + x['model'])} />
-        <ComboBox list={makeAndModel.map(x => x['year'])} /> */}
-        <ComboBox list={makeAndModel}/>
-        <h1> {data["0"]} was fetched</h1>
+        <ComboBox list={data[0]} />
+        {/* <h1> {makeAndModel}</h1> */}
+
+
+{/* This should be moved to later. i.e. on button click, add this text. Use data[0] indexed at the corresponding vehicle id, and extract the gas mileage/etcc....
         <h1>You'll consume -- barrels of fuel per annum.</h1>
-        <h1>That's the same as --some equivalent surprising comparison--</h1>
+        <h1>That's the same as --some equivalent surprising comparison--</h1> */}
+      
+      
       </div>
     );
   }
@@ -57,7 +59,6 @@ function App() {
 
         <FetchFlask url="http://localhost:5012/data" />
 
-
         <br></br>
         <Button variant="contained" color="primary">Find impact</Button>
 
@@ -69,7 +70,7 @@ function App() {
           rel="noopener noreferrer"
         >
           Git Repo
-        </a>
+        </a>-
       </header>
     </div>
   );
@@ -78,8 +79,8 @@ function App() {
 function ComboBox(props) {
   return <Autocomplete
     id="car-combo-box"
-    options={makeAndModel}
-    getOptionLabel={(option) => option.make + ' ' + option.model}
+    options={props.list}
+    getOptionLabel={(option) => option.make + ' ' + option.model + ' - ' + option.vehicle_id}
     style={{ width: 300 }}
     renderInput={(params) => <TextField {...params} label={"Vehicle Selection"} variant="outlined" />}
   />;
