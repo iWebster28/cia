@@ -1,40 +1,20 @@
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, Float, String, MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 import csv
 import logging
 import pandas as pd
 import numpy as np
 import time
+import psycopg2
+from tqdm import tqdm
+# Connect to the database.
+
+
         
 def main():
-    meta = MetaData()
     logging.basicConfig(filename="basic.log", level=logging.WARNING, format='%(levelname)s:%(message)s')
-    users = {}
-    hostInfo = {}
-    ## Open files to fill in Cloud Connection Configuration
-    with open("password_file.txt", encoding="utf-8") as file:
-        for line in file:
-            name, val = line.split("=")
-            users[name] = val
-
-    with open("host.txt", encoding="utf-8") as file:
-        for line in file:
-            name, val = line.split("=")
-            hostInfo[name] = val
-
-    username, password = users["harris"].split(",")
-    engine_string = "cockroachdb://%s:%s@%s:26257/%s?sslmode=verify-full&sslrootcert=%s" % (username, password, hostInfo["host"], hostInfo["database"], hostInfo["cert"])
-    print(engine_string)
-    engine = create_engine(engine_string)
-    Session = sessionmaker(bind=engine)
-    session = Session() ## Instantiate the session whenever you want to 
-    # start a conversation with the database.
-
-    CIAList = ['students', meta]
+    CIAList = []
     
-    frame = pd.read_csv("results.csv", header=0)
+    frame = pd.read_csv("results3.csv", header=0)
+    
     types = frame.dtypes.values
     indices = frame.dtypes.index.values
     new_list = []
@@ -42,23 +22,75 @@ def main():
         new_list.append((index, types[i]))
 
     ## Get a list of attributes for table initiation
-    CIAList.append(Column('Vehicle ID', Integer, primary_key=True))
+    lower_score = lambda x: x.replace(" ", "_").replace("(", "").replace(")", "").lower()
+    CIAList.append("vehicle_id INT PRIMARY KEY")
+
+    ## For executemany statement later
+    types = [] 
+    typesDecorator = []
+    types.append("vehicle_id")
+    typesDecorator.append("%(vehicle_id)s")
+
     for name, column_type in new_list[1:]:
         if column_type == np.float64:
-            CIAList.append(Column(name, Float))
+            CIAList.append("%s %s" % (lower_score(name), "decimal ( 15 , 5 )"))
         elif column_type == np.int64:
-            CIAList.append(Column(name, Integer))
+            CIAList.append("%s %s" % (lower_score(name), "INT"))
         elif column_type == np.object:
-            CIAList.append(Column(name, String))
+            CIAList.append("%s %s" % (lower_score(name), "VARCHAR ( 255 )"))
 
-    CIA = Table(*CIAList) ## Create the table and unpack the array
-    conn = engine.connect()
+        types.append(lower_score(name))
+        typesDecorator.append("%%(%s)s" % (lower_score(name)))
+
+    # print(CIAList[0:10]) ## Make sure its general format is correct
+
+################################ MAKE THE CONNECTION #############################
+    hostInfo = {}
+    with open("host.txt") as file:
+        for line in file:
+            key, value = line.split("=")
+            hostInfo[key] = value
+
+    users = {}
+    with open("password_file.txt") as file:
+        for line in file:
+            key, value = line.split("=")
+            users[key] = value
+    username, password = users["harris"].split(",")
+
+    conn = psycopg2.connect(
+        user=username,
+        password=password,
+        host="cia-db-8b5.gcp-us-west1.cockroachlabs.cloud",
+        port=26257,
+        database=hostInfo["database"],
+        sslmode='verify-full',
+        sslrootcert="cia-db-ca.crt"
+    )
+    cur = conn.cursor()
+
+    cur.execute("USE DEFAULTDB")
+    newQuery = ",\n".join(CIAList)
+    cur.execute("""CREATE TABLE IF NOT EXISTS results ( %s )""" % (newQuery))
+    
+    frame.columns = types
+    types = ",".join(types)
+    typesDecorator = ", ".join(typesDecorator)
+    
+    records = frame.to_dict("records")
     t0 = time.time()
-    conn.execute(CIA.insert(),
-    frame.to_dict("records"))
+    insert_statement = """INSERT INTO results(%s) VALUES (%s)""" % (types, typesDecorator)
+    for i in tqdm(range(3, len(records), 30)):
+        if i + 30 < len(records):
+            cur.executemany(insert_statement, tuple(records[i:i+30]))
+        else:
+            cur.executemany(insert_statement, tuple(records[i:]))
+        
+        conn.commit()
+
+
     t1 = time.time()
     print("Time taken for bulk insert: %.2f" % (t1 - t0))
-
 
 if __name__ == "__main__":
     main()
