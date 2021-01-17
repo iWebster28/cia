@@ -41,6 +41,10 @@ export default function SimpleCard(props) {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
+  const fields = ["class", "fuel_type_1", "fuel_type2", "annual_consumption_in_barrels_ft1", 
+  "annual_consumption_in_barrels_ft2", "city_electricity_consumption", "highway_electricity_consumption", "wh_ft1", 
+      "wh_ft_2", "tailpipe_co2_ft1", "tailpipe_co2_ft2"];
+
   return (
     <Card className={classes.root} style={{padding:0}}>
       <CardContent>
@@ -64,7 +68,7 @@ export default function SimpleCard(props) {
             <br></br>
           {props.comboValue ? props.comboValue.col_consumption_in_barrels_ft2 : ""} Barrels
         <Typography variant="h4" component="h2">
-            {props.comboValue ? props.comboValue.barrels : ""} Barrels
+            {props.comboValue ? props.comboValue.col_consumption_in_barrels_ft2 : ""} Barrels
         </Typography>
         <Typography variant="body2" component="p">
             of fuel per annum.        
@@ -73,6 +77,7 @@ export default function SimpleCard(props) {
             That's the same as
             {props.comboValue ? parseInt(props.comboValue.col_consumption_in_barrels_ft2*158.987/200) : 0} Bathtubs
         </Typography>
+<<<<<<< HEAD
 
         <Typography variant="body2" component="b">
             Additional Stats:
@@ -84,7 +89,22 @@ export default function SimpleCard(props) {
             </Typography>
         ))}ariant="h4" component="h2">
             {props.comboValue ? parseInt(props.comboValue.barrels*158.987/200) : 0} Bathtubs
+=======
+        <Typography variant="h4" component="h2">
+            {props.comboValue ? parseInt(props.comboValue.col_consumption_in_barrels_ft2*158.987/200) : 0} Bathtubs
         </Typography>
+        
+        <Typography variant="body2" component="b">
+            Additional Stats:
+>>>>>>> 35d6f76059f726a91e17369a26b5820fb560ebef
+        </Typography>
+
+        {fields.map((field) => (
+            <Typography variant="body2" component="p">
+                {props.comboValue ? field + ': ' + parseInt(props.comboValue[field]) : 0}
+            </Typography>
+        ))}
+
 
         {/* <BarChart width={468}/> */}
 

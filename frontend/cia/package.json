@@ -20,7 +20,11 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
+<<<<<<< HEAD
     "start": "react-scripts start",
+=======
+    "start": "PORT=8006 react-scripts start",
+>>>>>>> 35d6f76059f726a91e17369a26b5820fb560ebef
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
