@@ -1,3 +1,3 @@
 host=cia-db-8b5.gcp-us-west1.cockroachlabs.cloud
 database=defaultdb
-cert="/mnt/c/Users/Admin/Documents/GitHub/cia/backend/flask/database/cia-db-ca.crt"
+cert="./cia-db-ca.crt"

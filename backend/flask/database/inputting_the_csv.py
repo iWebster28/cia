@@ -7,31 +7,14 @@ import logging
 import pandas as pd
 import numpy as np
 import time
+import psycopg2
+# Connect to the database.
+
+
         
 def main():
     meta = MetaData()
     logging.basicConfig(filename="basic.log", level=logging.WARNING, format='%(levelname)s:%(message)s')
-    users = {}
-    hostInfo = {}
-    ## Open files to fill in Cloud Connection Configuration
-    with open("password_file.txt", encoding="utf-8") as file:
-        for line in file:
-            name, val = line.split("=")
-            users[name] = val
-
-    with open("host.txt", encoding="utf-8") as file:
-        for line in file:
-            name, val = line.split("=")
-            hostInfo[name] = val
-
-    username, password = users["harris"].split(",")
-    engine_string = "cockroachdb://%s:%s@%s:26257/%s?sslmode=verify-full&sslrootcert=%s" % (username, password, hostInfo["host"], hostInfo["database"], hostInfo["cert"])
-    print(engine_string)
-    engine = create_engine(engine_string)
-    Session = sessionmaker(bind=engine)
-    session = Session() ## Instantiate the session whenever you want to 
-    # start a conversation with the database.
-
     CIAList = ['students', meta]
     
     frame = pd.read_csv("results.csv", header=0)
@@ -52,7 +35,29 @@ def main():
             CIAList.append(Column(name, String))
 
     CIA = Table(*CIAList) ## Create the table and unpack the array
-    conn = engine.connect()
+    
+    hostInfo = {}
+    with open("host.txt") as file:
+        for line in file:
+            key, value = line.split("=")
+            hostInfo[key] = value
+
+    users = {}
+    with open("password_file.txt") as file:
+        for line in file:
+            key, value = line.split("=")
+            users[key] = value
+    username, password = users["harris"]
+
+    conn = psycopg2.connect(
+        user=username,
+        password=password,
+        host=hostInfo["host"],
+        port=26257,
+        database=hostInfo["database"],
+        sslmode='verify-full',
+        sslrootcert=hostInfo["cert"]
+    )
     t0 = time.time()
     conn.execute(CIA.insert(),
     frame.to_dict("records"))
