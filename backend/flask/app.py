@@ -5,7 +5,8 @@ import sys
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
+# @app.before_first_request():
+# def startConnection()
 @app.route('/')
 def index():
     return "Index page"

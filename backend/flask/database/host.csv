@@ -1,0 +1,2 @@
+host,database,cert
+cia-db-8b5.gcp-us-west1.cockroachlabs.cloud,defaultdb,

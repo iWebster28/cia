@@ -16,7 +16,7 @@ function FetchFlask({ url, flaskData, setFlaskData }) {
       // const makeAndModel = data[0].map(x => [x.make, x.model, x.vehicle_id]);
       // console.log(makeAndModel);
       console.log(data[0]);
-      setFlaskData(data[0]);
+      setFlaskData(data[0]); //we're not supposed to do this here....
     }
     return null;
 }

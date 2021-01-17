@@ -7,6 +7,8 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import BarChart from './BarChart';
+
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -34,7 +36,7 @@ export default function SimpleCard(props) {
   const bull = <span className={classes.bullet}>•</span>;
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} style={{padding:0}}>
       <CardContent>
         <CardMedia
             className={classes.media}
@@ -46,17 +48,17 @@ export default function SimpleCard(props) {
           Results for
         </Typography>
         <Typography variant="h5" component="h2">
-          {props.comboValue.make + ' ' + props.comboValue.model}
+          {props.comboValue ? props.comboValue.make + ' ' + props.comboValue.model : ""}
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          Vehicle ID {props.comboValue.vehicle_id}
+          Vehicle ID {props.comboValue ? props.comboValue.vehicle_id : ""}
         </Typography>
         <Typography variant="body2" component="p">
           Consumes
             <br></br>
         </Typography>
         <Typography variant="h4" component="h2">
-            {props.comboValue.barrels} Barrels
+            {props.comboValue ? props.comboValue.barrels : ""} Barrels
         </Typography>
         <Typography variant="body2" component="p">
             of fuel per annum.        
@@ -67,6 +69,9 @@ export default function SimpleCard(props) {
         <Typography variant="h4" component="h2">
             --some equivalent surprising comparison--
         </Typography>
+
+        {/* <BarChart width={468}/> */}
+
       </CardContent>
       {/* <CardActions>
         <Button size="small">Learn More</Button>

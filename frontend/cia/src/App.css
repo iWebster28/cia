@@ -14,6 +14,10 @@
 }
 
 .App-header {
+  background-image: url(./car.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   background-color: #FFFFFF;
   min-height: 100vh;
   display: flex;

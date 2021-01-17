@@ -5,7 +5,6 @@ import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import SelectInput from "@material-ui/core/Select/SelectInput";
 
 function ComboBox(props) {
-    
     return (
     <div>
     <Autocomplete
