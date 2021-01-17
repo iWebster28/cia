@@ -15,9 +15,10 @@ import psycopg2
 def main():
     meta = MetaData()
     logging.basicConfig(filename="basic.log", level=logging.WARNING, format='%(levelname)s:%(message)s')
-    CIAList = ['students', meta]
+    CIAList = []
     
     frame = pd.read_csv("results.csv", header=0)
+    
     types = frame.dtypes.values
     indices = frame.dtypes.index.values
     new_list = []
@@ -25,17 +26,29 @@ def main():
         new_list.append((index, types[i]))
 
     ## Get a list of attributes for table initiation
-    CIAList.append(Column('Vehicle ID', Integer, primary_key=True))
+    lower_score = lambda x: x.replace(" ", "_").replace("(", "").replace(")", "").lower()
+    CIAList.append("vehicle_id INT PRIMARY KEY")
+
+    ## For executemany statement later
+    types = [] 
+    typesDecorator = []
+    types.append("vehicle_id")
+    typesDecorator.append("%(vehicle_id)s")
+
     for name, column_type in new_list[1:]:
         if column_type == np.float64:
-            CIAList.append(Column(name, Float))
+            CIAList.append("%s %s" % (lower_score(name), "decimal ( 10 , 5 )"))
         elif column_type == np.int64:
-            CIAList.append(Column(name, Integer))
+            CIAList.append("%s %s" % (lower_score(name), "INT"))
         elif column_type == np.object:
-            CIAList.append(Column(name, String))
+            CIAList.append("%s %s" % (lower_score(name), "VARCHAR ( 255 )"))
 
-    CIA = Table(*CIAList) ## Create the table and unpack the array
-    
+        types.append(lower_score(name))
+        typesDecorator.append("%%(%s)s" % (lower_score(name)))
+
+    # print(CIAList[0:10]) ## Make sure its general format is correct
+
+################################ MAKE THE CONNECTION #############################
     hostInfo = {}
     with open("host.txt") as file:
         for line in file:
@@ -47,23 +60,37 @@ def main():
         for line in file:
             key, value = line.split("=")
             users[key] = value
-    username, password = users["harris"]
+    username, password = users["harris"].split(",")
 
     conn = psycopg2.connect(
         user=username,
         password=password,
-        host=hostInfo["host"],
+        host="cia-db-8b5.gcp-us-west1.cockroachlabs.cloud",
         port=26257,
         database=hostInfo["database"],
         sslmode='verify-full',
-        sslrootcert=hostInfo["cert"]
+        sslrootcert="cia-db-ca.crt"
     )
-    t0 = time.time()
-    conn.execute(CIA.insert(),
-    frame.to_dict("records"))
-    t1 = time.time()
-    print("Time taken for bulk insert: %.2f" % (t1 - t0))
+    cur = conn.cursor()
 
+    cur.execute("USE DEFAULTDB")
+    newQuery = ",\n".join(CIAList)
+    cur.execute("""CREATE TABLE IF NOT EXISTS results ( %s )""" % (newQuery))
+    
+    frame.columns = types
+    types = ",".join(types)
+    typesDecorator = ", ".join(typesDecorator)
+    
+    records = frame.to_dict("records")
+    t0 = time.time()
+    insert_statement = """INSERT INTO results(%s) VALUES (%s)""" % (types, typesDecorator)
+    print(records[0])
+    # cur.executemany(insert_statement, tuple(records))
+    t1 = time.time()
+
+    # print("Time taken for bulk insert: %.2f" % (t1 - t0))
+
+    conn.commit()
 
 if __name__ == "__main__":
     main()
