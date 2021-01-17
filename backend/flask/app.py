@@ -106,5 +106,12 @@ def get_data():
     # db = json.dumps(db)
     return results
 
+@app.route('/image', methods=['GET'])    
+@cross_origin()
+def get_image():
+
+
+    return
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=sys.argv[1], debug=True)

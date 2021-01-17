@@ -15,9 +15,6 @@ def main():
     
     frame = pd.read_csv("results3.csv", header=0)
     
-    types = frame.dtypes.values
-    indices = frame.dtypes.index.values
-    new_list = []
     for i, index in enumerate(indices):
         new_list.append((index, types[i]))
 
@@ -33,6 +30,7 @@ def main():
 
     for name, column_type in new_list[1:]:
         if column_type == np.float64:
+
             CIAList.append("%s %s" % (lower_score(name), "decimal ( 15 , 5 )"))
         elif column_type == np.int64:
             CIAList.append("%s %s" % (lower_score(name), "INT"))
@@ -90,7 +88,6 @@ def main():
 
 
     t1 = time.time()
-    print("Time taken for bulk insert: %.2f" % (t1 - t0))
 
 if __name__ == "__main__":
     main()

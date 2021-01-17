@@ -7,11 +7,13 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+// let getImage = require('./getImage');
+
 import BarChart from './BarChart';
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275,
+    minWidth: 465,
     maxWidth: 500
   },
   media: {
@@ -67,7 +69,7 @@ export default function SimpleCard(props) {
             That's the same as
         </Typography>
         <Typography variant="h4" component="h2">
-            --some equivalent surprising comparison--
+            {props.comboValue ? parseInt(props.comboValue.barrels*158.987/200) : 0} Bathtubs
         </Typography>
 
         {/* <BarChart width={468}/> */}
