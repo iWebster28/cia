@@ -34,6 +34,10 @@ const useStyles = makeStyles({
 });
 
 export default function SimpleCard(props) {
+
+  const fields = ["class", "fuel_type_1", "fuel_type2", "annual_consumption_in_barrels_ft1", 
+  "annual_consumption_in_barrels_ft2", "city_electricity_consumption", "highway_electricity_consumption", "wh_ft1", 
+      "wh_ft_2", "tailpipe_co2_ft1", "tailpipe_co2_ft2"];
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
@@ -58,7 +62,7 @@ export default function SimpleCard(props) {
         <Typography variant="body2" component="p">
           Consumes
             <br></br>
-        </Typography>
+          {props.comboValue ? props.comboValue.col_consumption_in_barrels_ft2 : ""} Barrels
         <Typography variant="h4" component="h2">
             {props.comboValue ? props.comboValue.barrels : ""} Barrels
         </Typography>
@@ -67,8 +71,18 @@ export default function SimpleCard(props) {
             <br></br>
             <br></br>
             That's the same as
+            {props.comboValue ? parseInt(props.comboValue.col_consumption_in_barrels_ft2*158.987/200) : 0} Bathtubs
         </Typography>
-        <Typography variant="h4" component="h2">
+
+        <Typography variant="body2" component="b">
+            Additional Stats:
+        </Typography>
+
+        {fields.map((field) => (
+            <Typography variant="body2" component="p">
+                {props.comboValue ? field + ': ' + parseInt(props.comboValue[field]) : 0}
+            </Typography>
+        ))}ariant="h4" component="h2">
             {props.comboValue ? parseInt(props.comboValue.barrels*158.987/200) : 0} Bathtubs
         </Typography>
 

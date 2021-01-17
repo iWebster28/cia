@@ -5,7 +5,7 @@ function FetchFlask({ url, flaskData, setFlaskData }) {
     useEffect(() => { //  useEffect fetches from 'url' and sets data
       fetch(`${url}`, {method: "GET", headers: {"Content-Type": "application/json", "Accept": "application/json"}})
         .then(res => res.json())
-        .then(data => setData(data))
+        .then(data => setData(data["0"]))
         .catch(console.error);
     }, []);
   
