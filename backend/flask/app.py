@@ -20,9 +20,9 @@ def get_data():
     # Get data from cockcroachdb
     #Demo
     db = { "0": [
-        { "make": 'Alfa Romeo', "model": 'GT V6 2.5', "vehicle_id": 1984},
-        { "make": 'Audi', "model": '4000', "vehicle_id": 19854},
-        { "make": 'BMW', "model": '3 Series', "vehicle_id": 19854}
+        { "make": 'Alfa Romeo', "model": 'GT V6 2.5', "vehicle_id": 1984, "barrels": 10},
+        { "make": 'Audi', "model": '4000', "vehicle_id": 19854, "barrels": 20},
+        { "make": 'BMW', "model": '3 Series', "vehicle_id": 19854, "barrels": 30}
     ]}
     # db = json.dumps(db)
     return db

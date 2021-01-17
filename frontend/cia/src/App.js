@@ -2,6 +2,7 @@ import './App.css';
 import { Button } from '@material-ui/core';
 
 import FetchFlask from './Components/FetchFlask';
+import Card from './Components/Card';
 
 //To be replaced
 // const makeAndModel = [
@@ -15,12 +16,15 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>CIA</h1>
-        <h5>Car Impact Associator</h5>
+        {/* <b>A React App to compare fuel economy and environmental impact of various cars on the North American market.</b> */}
+        <p>Car Impact Associator</p>
 
-        <FetchFlask url="http://localhost:5012/data" />
+        <FetchFlask url="http://localhost:5013/data" />
 
         <br></br>
         <Button variant="contained" color="primary">Find impact</Button>
+        <br></br>
+        <Card/>
 
         <br></br>
         <a
@@ -31,6 +35,7 @@ function App() {
         >
           Git Repo
         </a>
+        <br></br>
       </header>
     </div>
   );

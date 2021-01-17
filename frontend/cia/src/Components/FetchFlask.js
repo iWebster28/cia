@@ -41,10 +41,16 @@ function ComboBox(props) {
     return <Autocomplete
       id="car-combo-box"
       options={props.list}
+      filterOptions={filterOptions}
       getOptionLabel={(option) => option.make + ' ' + option.model + ' - ' + option.vehicle_id}
       style={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label={"Vehicle Selection"} variant="outlined" />}
     />;
 }
+
+// Limit how many items in the Combo Box dropdown are shown
+const filterOptions = createFilterOptions({
+    limit: 10,
+});
 
 export default FetchFlask;
