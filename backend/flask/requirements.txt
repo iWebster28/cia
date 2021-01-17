@@ -1,5 +1,6 @@
 Flask
-SQLAlchemy
 flask-cors
 numpy
 pandas
+psycopg2
+tqdm
