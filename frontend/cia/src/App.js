@@ -41,7 +41,7 @@ function App() {
         {/* <p>A React App to compare fuel economy and environmental impact of various cars on the North American market.</p> */}
         <p>Car Impact Associator</p>
 
-        <FetchFlask url="http://localhost:5015/data" flaskData={flaskData} setFlaskData={setFlaskData} />
+        <FetchFlask url="http://localhost:5016/data" flaskData={flaskData} setFlaskData={setFlaskData} />
         <br></br>
 
         {/* <br></br>

@@ -64,7 +64,7 @@ export default function SimpleCard(props) {
             <br></br>
         </Typography>
         <Typography variant="h4" component="h2">
-            {props.comboValue ? props.comboValue.col_consumption_in_barrels_ft2 : ""} Barrels
+            {props.comboValue ? props.comboValue.barrels : ""} Barrels
         </Typography>
         <Typography variant="body2" component="p">
             of fuel per annum.        
@@ -73,18 +73,18 @@ export default function SimpleCard(props) {
             That's the same as
         </Typography>
         <Typography variant="h4" component="h2">
-            {props.comboValue ? parseInt(props.comboValue.col_consumption_in_barrels_ft2*158.987/200) : 0} Bathtubs
+            {props.comboValue ? parseInt(props.comboValue.barrels*158.987/200) : 0} Bathtubs
         </Typography>
         
         <Typography variant="body2" component="b">
             Additional Stats:
         </Typography>
 
-        {fields.map((field) => (
+        {/* {fields.map((field) => (
             <Typography variant="body2" component="p">
                 {props.comboValue ? field + ': ' + parseInt(props.comboValue[field]) : 0}
             </Typography>
-        ))}
+        ))} */}
 
 
         {/* <BarChart width={468}/> */}
